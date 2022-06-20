@@ -5,6 +5,8 @@
 
 #include "utils.h"
 
+
+//#define BY_DEBUG
 #define DEBUG_REVERSE_FN 1
 
 extern DRAMLayout g_mem_layout;
@@ -43,10 +45,18 @@ physaddr_t dram_2_phys(DRAMAddr d_addr)
 	uint64_t col_val = 0;
 
 	p_addr = (d_addr.row << __builtin_ctzl(g_mem_layout.row_mask));	// set row bits
+#ifdef BY_DEBUG
+	fprintf(stderr, "row p_addr: %ld\t", p_addr);
+#endif
 	p_addr |= (d_addr.col << __builtin_ctzl(g_mem_layout.col_mask));	// set col bits
-
+#ifdef BY_DEBUG
+	fprintf(stderr, "with col: %ld\n", p_addr);
+#endif
 	for (int i = 0; i < g_mem_layout.h_fns.len; i++) {
 		uint64_t masked_addr = p_addr & g_mem_layout.h_fns.lst[i];
+#ifdef BY_DEBUG
+	fprintf(stderr, "h_fns.lst[%d]:%ld, maksed_addr: %ld, d_addr.bank: %ld\n", i, g_mem_layout.h_fns.lst[i],masked_addr, d_addr.bank);
+#endif
 		// if the address already respects the h_fn then just move to the next func
 		if (__builtin_parity(masked_addr) == ((d_addr.bank >> i) & 1L)) {
 			continue;
@@ -56,6 +66,9 @@ physaddr_t dram_2_phys(DRAMAddr d_addr)
 		uint64_t h_lsb = __builtin_ctzl((g_mem_layout.h_fns.lst[i]) &
 						~(g_mem_layout.col_mask) &
 						~(g_mem_layout.row_mask));
+#ifdef BY_DEBUG
+	fprintf(stderr, "h_lsb = %ld, g_mem_layout.h_fns.lst[%d]:%ld, col_mask: %ld, row_mask: %ld\n", h_lsb, i, g_mem_layout.h_fns.lst[i], g_mem_layout.col_mask, g_mem_layout.row_mask);
+#endif
 		p_addr ^= 1 << h_lsb;
 	}
 

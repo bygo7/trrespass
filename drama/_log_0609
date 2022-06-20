@@ -1,0 +1,22 @@
+~~~~~~~~~~ Found Functions ~~~~~~~~~~
+         Valid Function: 0x44000                 bits: 14 + 18
+         Valid Function: 0x88000                 bits: 15 + 19
+         Valid Function: 0x110000                bits: 16 + 20
+~~~~~~~~~ Looking for row bits ~~~~~~~~~~
+[LOG] - Set #0
+[LOG] - 135b021c0 - c1cf23f      Time: 260 <== GOTCHA
+[LOG] - 135b021c0 - b9500764     Time: 245 <== GOTCHA
+[LOG] - 135b021c0 - 2a102fd      Time: 245 <== GOTCHA
+[LOG] - 135b021c0 - 980dfcbe     Time: 260 <== GOTCHA
+[LOG] - 135b021c0 - 2b7ccec5     Time: 245 <== GOTCHA
+[LOG] - Set #1
+[LOG] - bc3760c0 - 11a422d49     Time: 248 <== GOTCHA
+[LOG] - bc3760c0 - 7a3114e8      Time: 248 <== GOTCHA
+[LOG] - bc3760c0 - 1cf5991cb     Time: 248 <== GOTCHA
+[LOG] - bc3760c0 - 15bbdd4da     Time: 248 <== GOTCHA
+[LOG] - bc3760c0 - bc799882      Time: 260 <== GOTCHA
+
+
+
+
+[LOG] - Row mask: 0xffff000000           bits: 24 + 25 + 26 + 27 + 28 + 29 + 30 + 31 + 32 + 33 + 34 + 35 + 36 + 37 + 38 + 39

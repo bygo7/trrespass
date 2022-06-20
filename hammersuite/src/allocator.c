@@ -12,6 +12,7 @@
 #include <string.h>
 
 #include "utils.h"
+#define BY_DEBUG
 
 int alloc_buffer(MemoryBuffer * mem)
 {
@@ -25,7 +26,6 @@ int alloc_buffer(MemoryBuffer * mem)
 
 	uint64_t alloc_size = mem->align ? mem->size + mem->align : mem->size;
 	uint64_t alloc_flags = MAP_PRIVATE | MAP_POPULATE;
-
 	if (mem->flags & F_ALLOC_HUGE) {
 		if (mem->fd == 0) {
 			fprintf(stderr,
@@ -44,6 +44,12 @@ int alloc_buffer(MemoryBuffer * mem)
 	}
 	mem->buffer = (char *)mmap(NULL, mem->size, PROT_READ | PROT_WRITE,
 				   alloc_flags, mem->fd, 0);
+        #ifdef BY_DEBUG
+                fprintf(stdout, "private: %d, populate: %d \n", MAP_PRIVATE, MAP_POPULATE);
+                fprintf(stdout, "mmaping.. mem->buffer: %d, mem->size: %d, prot: %d, flags: %d, filedes: %d\n", mem->buffer, mem->size, PROT_READ | PROT_WRITE,
+                                   alloc_flags, mem->fd);
+		printf("%d, %s\n", errno, strerror(errno));
+        #endif	
 	if (mem->buffer == MAP_FAILED) {
 		perror("[ERROR] - mmap() failed");
 		exit(1);

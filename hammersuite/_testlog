@@ -1,0 +1,81 @@
+private: 2, populate: 32768 
+mmaping.. mem->buffer: -1073741824, mem->size: 1073741824, prot: 3, flags: 2013560866, filedes: 3
+0, Success
+[LOG] - Hammer session! access pattern: %i_sided	 data pattern: random
+ERR?
+[LOG] - File: /home/bygo/09_RH_STUDY/09_RH_GITCODES/01_TRRespass/hammersuite/data/DIMM00.2_sided.00000064.1024.1000000.stdrefi.csv
+
+init_addr_mapper bkno :0 total row: 1024, base_row: 64row: 0 , d_tmp.row: 64 
+gen_row_map bank:0, row:64, d_src.row: 64, col:0, dir_col::0, v_addr:(null) 
+row: 1 , d_tmp.row: 65 
+gen_row_map bank:0, row:65, d_src.row: 65, col:0, dir_col::0, v_addr:(null) 
+row: 2 , d_tmp.row: 66 
+gen_row_map bank:0, row:66, d_src.row: 66, col:0, dir_col::0, v_addr:(null) 
+row: 3 , d_tmp.row: 67 
+gen_row_map bank:0, row:67, d_src.row: 67, col:0, dir_col::0, v_addr:(null) 
+row: 4 , d_tmp.row: 68 
+gen_row_map bank:0, row:68, d_src.row: 68, col:0, dir_col::0, v_addr:(null) 
+row: 5 , d_tmp.row: 69 
+gen_row_map bank:0, row:69, d_src.row: 69, col:0, dir_col::0, v_addr:(null) 
+row: 6 , d_tmp.row: 70 
+gen_row_map bank:0, row:70, d_src.row: 70, col:0, dir_col::0, v_addr:(null) 
+row: 7 , d_tmp.row: 71 
+gen_row_map bank:0, row:71, d_src.row: 71, col:0, dir_col::0, v_addr:(null) 
+row: 8 , d_tmp.row: 72 
+gen_row_map bank:0, row:72, d_src.row: 72, col:0, dir_col::0, v_addr:(null) 
+row: 9 , d_tmp.row: 73 
+gen_row_map bank:0, row:73, d_src.row: 73, col:0, dir_col::0, v_addr:(null) 
+row: 10 , d_tmp.row: 74 
+gen_row_map bank:0, row:74, d_src.row: 74, col:0, dir_col::0, v_addr:(null) 
+row: 11 , d_tmp.row: 75 
+gen_row_map bank:0, row:75, d_src.row: 75, col:0, dir_col::0, v_addr:(null) 
+row: 12 , d_tmp.row: 76 
+gen_row_map bank:0, row:76, d_src.row: 76, col:0, dir_col::0, v_addr:(null) 
+row: 13 , d_tmp.row: 77 
+gen_row_map bank:0, row:77, d_src.row: 77, col:0, dir_col::0, v_addr:(null) 
+row: 14 , d_tmp.row: 78 
+gen_row_map bank:0, row:78, d_src.row: 78, col:0, dir_col::0, v_addr:(null) 
+row: 15 , d_tmp.row: 79 
+gen_row_map bank:0, row:79, d_src.row: 79, col:0, dir_col::0, v_addr:(null) 
+row: 16 , d_tmp.row: 80 
+gen_row_map bank:0, row:80, d_src.row: 80, col:0, dir_col::0, v_addr:(null) 
+row: 17 , d_tmp.row: 81 
+gen_row_map bank:0, row:81, d_src.row: 81, col:0, dir_col::0, v_addr:(null) 
+row: 18 , d_tmp.row: 82 
+gen_row_map bank:0, row:82, d_src.row: 82, col:0, dir_col::0, v_addr:(null) 
+row: 19 , d_tmp.row: 83 
+gen_row_map bank:0, row:83, d_src.row: 83, col:0, dir_col::0, v_addr:(null) 
+row: 20 , d_tmp.row: 84 
+gen_row_map bank:0, row:84, d_src.row: 84, col:0, dir_col::0, v_addr:(null) 
+row: 21 , d_tmp.row: 85 
+gen_row_map bank:0, row:85, d_src.row: 85, col:0, dir_col::0, v_addr:(null) 
+row: 22 , d_tmp.row: 86 
+gen_row_map bank:0, row:86, d_src.row: 86, col:0, dir_col::0, v_addr:(null) 
+row: 23 , d_tmp.row: 87 
+gen_row_map bank:0, row:87, d_src.row: 87, col:0, dir_col::0, v_addr:(null) 
+row: 24 , d_tmp.row: 88 
+gen_row_map bank:0, row:88, d_src.row: 88, col:0, dir_col::0, v_addr:(null) 
+row: 25 , d_tmp.row: 89 
+gen_row_map bank:0, row:89, d_src.row: 89, col:0, dir_col::0, v_addr:(null) 
+row: 26 , d_tmp.row: 90 
+gen_row_map bank:0, row:90, d_src.row: 90, col:0, dir_col::0, v_addr:(null) 
+row: 27 , d_tmp.row: 91 
+gen_row_map bank:0, row:91, d_src.row: 91, col:0, dir_col::0, v_addr:(null) 
+row: 28 , d_tmp.row: 92 
+gen_row_map bank:0, row:92, d_src.row: 92, col:0, dir_col::0, v_addr:(null) 
+row: 29 , d_tmp.row: 93 
+gen_row_map bank:0, row:93, d_src.row: 93, col:0, dir_col::0, v_addr:(null) 
+row: 30 , d_tmp.row: 94 
+gen_row_map bank:0, row:94, d_src.row: 94, col:0, dir_col::0, v_addr:(null) 
+row: 31 , d_tmp.row: 95 
+gen_row_map bank:0, row:95, d_src.row: 95, col:0, dir_col::0, v_addr:(null) 
+row: 32 , d_tmp.row: 96 
+gen_row_map bank:0, row:96, d_src.row: 96, col:0, dir_col::0, v_addr:(null) 
+row: 33 , d_tmp.row: 97 
+gen_row_map bank:0, row:97, d_src.row: 97, col:0, dir_col::0, v_addr:(null) 
+row: 34 , d_tmp.row: 98 
+gen_row_map bank:0, row:98, d_src.row: 98, col:0, dir_col::0, v_addr:(null) 
+row: 35 , d_tmp.row: 99 
+gen_row_map bank:0, row:99, d_src.row: 99, col:0, dir_col::0, v_addr:(null) 
+row: 36 , d_tmp.row: 100 
+gen_row_

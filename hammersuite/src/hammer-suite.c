@@ -30,6 +30,7 @@
 #define P_FIELD			1<<3
 #define ALL_FIELDS		(ROW_FIELD | COL_FIELD | BK_FIELD)
 #define FLIPTABLE
+#define BY_DEBUG
 
 /*
  h_patt		= hammer pattern (e.g., DOUBLE_SIDED)
@@ -296,7 +297,7 @@ void fill_row(HammerSuite *suite, DRAMAddr *d_addr, HammerData data_patt, int re
 		fill_stripe(*d_addr, 0xff, suite->mapper);
 		break;
 	default:
-		// fprintf(stderr, "[ERROR] - Wrong data pattern %d\n", data_patt);
+		// fprintf(stdout, "[ERROR] - Wrong data pattern %d\n", data_patt);
 		// exit(1);
 		break;
 	}
@@ -357,12 +358,24 @@ void init_stripe(HammerSuite * suite, uint8_t val)
 	DRAMAddr d_tmp;
 	for (size_t bk = 0; bk < get_banks_cnt(); bk++) {
 		d_tmp.bank = bk;
+#ifdef BY_DEBUG
+	fprintf(stdout, "bank loop: %ld / total %ld\n", bk, get_banks_cnt());
+#endif
 		for (size_t row = 0; row < suite->cfg->h_rows; row++) {
 			d_tmp.row = suite->mapper->base_row + row;
+#ifdef BY_DEBUG
+        fprintf(stdout, "row loop: %ld / total %ld\n", d_tmp.row, suite->cfg->h_rows);
+#endif
 			for (size_t col = 0; col < ROW_SIZE; col += (1 << 6)) {
+#ifdef BY_DEBUG
+	fprintf(stdout, "bank loop: %ld / total %ld, row loop: %ld / total %ld, col loop: %ld / total %ld\t", bk, get_banks_cnt(), d_tmp.row, suite->cfg->h_rows, col, ROW_SIZE);
+#endif
 				d_tmp.col = col;
 				DRAM_pte d_pte = get_dram_pte(mapper, &d_tmp);
-				memset(d_pte.v_addr, val, CL_SIZE);
+#ifdef BY_DEBUG
+	fprintf(stdout, "getpte, memset %ld, %d, %d\n", d_pte.v_addr, val, CL_SIZE);
+#endif
+				//memset(d_pte.v_addr, val, CL_SIZE);
 			}
 		}
 	}
@@ -372,10 +385,15 @@ void init_chunk(HammerSuite * suite)
 {
 
 	if (p->vpat != (void *)NULL && p->tpat != (void *)NULL) {
+#ifdef BY_DEBUG
+		fprintf(stdout, "init_stripe start");
+#endif
 		init_stripe(suite, (uint8_t) * p->vpat);
 		return;
 	}
-
+#ifdef BY_DEBUG
+	fprintf(stdout, "init_chunk");
+#endif
 	SessionConfig *cfg = suite->cfg;
 	switch (cfg->d_cfg) {
 	case RANDOM:
@@ -388,7 +406,7 @@ void init_chunk(HammerSuite * suite)
 		init_stripe(suite, 0x00);
 		break;
 	default:
-		fprintf(stderr, "[ERROR] - Wrong data pattern %d\n",
+		fprintf(stdout, "[ERROR] - Wrong data pattern %d\n",
 			cfg->d_cfg);
 		exit(1);
 		break;
@@ -549,7 +567,7 @@ void scan_rows(HammerSuite * suite, HammerPattern * h_patt, size_t adj_rows)
 		scan_stripe(suite, h_patt, adj_rows, 0x00);
 		break;
 	default:
-		fprintf(stderr, "[ERROR] - Wrong data pattern %d\n",
+		fprintf(stdout, "[ERROR] - Wrong data pattern %d\n",
 			cfg->d_cfg);
 		exit(1);
 		break;
@@ -572,7 +590,7 @@ int free_triple_sided_test(HammerSuite * suite)
 	memset(h_patt.d_lst, 0x00, sizeof(DRAMAddr) * h_patt.len);
 
 	init_chunk(suite);
-	fprintf(stderr, "CL_SEED: %lx\n", CL_SEED);
+	fprintf(stdout, "CL_SEED: %lx\n", CL_SEED);
 
 	h_patt.d_lst[0] = d_base;
 	for (int r0 = 1; r0 < cfg->h_rows; r0++) {
@@ -585,7 +603,7 @@ int free_triple_sided_test(HammerSuite * suite)
 			h_patt.d_lst[0].bank = 0;
 			h_patt.d_lst[1].bank = 0;
 			h_patt.d_lst[2].bank = 0;
-			fprintf(stderr, "[HAMMER] - %s: ", hPatt_2_str(&h_patt, ROW_FIELD));
+			fprintf(stdout, "[HAMMER] - %s: ", hPatt_2_str(&h_patt, ROW_FIELD));
 			for (size_t bk = 0; bk < get_banks_cnt(); bk++) {
 				h_patt.d_lst[0].bank = bk;
 				h_patt.d_lst[1].bank = bk;
@@ -595,14 +613,14 @@ int free_triple_sided_test(HammerSuite * suite)
 					fill_row(suite, &h_patt.d_lst[idx], cfg->d_cfg, 0);
 				}
 				uint64_t time = hammer_it(&h_patt, mem);
-				fprintf(stderr, "%ld ", time);
+				fprintf(stdout, "%ld ", time);
 
 				scan_rows(suite, &h_patt, 0);
 				for (int idx = 0; idx < 3; idx++) {
 					fill_row(suite, &h_patt.d_lst[idx], cfg->d_cfg, 1);
 				}
 			}
-			fprintf(stderr, "\n");
+			fprintf(stdout, "\n");
 		}
 	}
 	free(h_patt.d_lst);
@@ -624,7 +642,7 @@ int assisted_double_sided_test(HammerSuite * suite)
 	memset(h_patt.d_lst, 0x00, sizeof(DRAMAddr) * h_patt.len);
 
 	init_chunk(suite);
-	fprintf(stderr, "CL_SEED: %lx\n", CL_SEED);
+	fprintf(stdout, "CL_SEED: %lx\n", CL_SEED);
 	h_patt.d_lst[0] = d_base;
 
 	for (int r0 = 1; r0 < cfg->h_rows; r0++) {
@@ -643,7 +661,7 @@ int assisted_double_sided_test(HammerSuite * suite)
 		h_patt.d_lst[0].bank = 0;
 		h_patt.d_lst[1].bank = 0;
 		h_patt.d_lst[2].bank = 0;
-		fprintf(stderr, "[HAMMER] - %s: ", hPatt_2_str(&h_patt, ROW_FIELD));
+		fprintf(stdout, "[HAMMER] - %s: ", hPatt_2_str(&h_patt, ROW_FIELD));
 		for (size_t bk = 0; bk < get_banks_cnt(); bk++) {
 			h_patt.d_lst[0].bank = bk;
 			h_patt.d_lst[1].bank = bk;
@@ -651,18 +669,18 @@ int assisted_double_sided_test(HammerSuite * suite)
 			// fill all the aggressor rows
 			for (int idx = 0; idx < 3; idx++) {
 				fill_row(suite, &h_patt.d_lst[idx], cfg->d_cfg, 0);
-				// fprintf(stderr, "d_addr: %s\n", dram_2_str(&h_patt.d_lst[idx]));
+				// fprintf(stdout, "d_addr: %s\n", dram_2_str(&h_patt.d_lst[idx]));
 			}
-			// fprintf(stderr, "d_addr: %s\n", dram_2_str(&h_patt.d_lst[idx]));
+			// fprintf(stdout, "d_addr: %s\n", dram_2_str(&h_patt.d_lst[idx]));
 			uint64_t time = hammer_it(&h_patt, mem);
-			fprintf(stderr, "%ld ", time);
+			fprintf(stdout, "%ld ", time);
 
 			scan_rows(suite, &h_patt, 0);
 			for (int idx = 0; idx<3; idx++) {
 				fill_row(suite, &h_patt.d_lst[idx], cfg->d_cfg, 1);
 			}
 		}
-		fprintf(stderr, "\n");
+		fprintf(stdout, "\n");
 	}
 	free(h_patt.d_lst);
 }
@@ -673,8 +691,11 @@ int n_sided_test(HammerSuite * suite)
 	SessionConfig *cfg = suite->cfg;
 	DRAMAddr d_base = suite->d_base;
 	d_base.col = 0;
+#ifdef BY_DEBUG
+	fprintf(stdout, "n_sided_test");
+#endif
 	/* d_base.row = 20480; */
-    /* d_base.row = 16400; */
+    d_base.row = 16400;
 	HammerPattern h_patt;
 
 	h_patt.len = cfg->aggr_n;
@@ -682,14 +703,16 @@ int n_sided_test(HammerSuite * suite)
 
 	h_patt.d_lst = (DRAMAddr *) malloc(sizeof(DRAMAddr) * h_patt.len);
 	memset(h_patt.d_lst, 0x00, sizeof(DRAMAddr) * h_patt.len);
-
+#ifdef BY_DEBUG
+	fprintf(stdout, "memset");
+#endif
 	init_chunk(suite);
-	fprintf(stderr, "CL_SEED: %lx\n", CL_SEED);
+	fprintf(stdout, "CL_SEED: %lx\n", CL_SEED);
 	h_patt.d_lst[0] = d_base;
 
 	const int mem_to_hammer = 256 << 20;
 	const int n_rows = mem_to_hammer / ((8<<10) *  get_banks_cnt());
-	fprintf(stderr, "Hammering %d rows per bank\n", n_rows);
+	fprintf(stdout, "Hammering %d rows per bank\n", n_rows);
 	for (int r0 = 1; r0 < n_rows; r0++) {
 		h_patt.d_lst[0].row = d_base.row + r0;
 		int k = 1;
@@ -700,7 +723,7 @@ int n_sided_test(HammerSuite * suite)
 		if (h_patt.d_lst[k - 1].row >= d_base.row + cfg->h_rows)
 			break;
 
-		fprintf(stderr, "[HAMMER] - %s: ", hPatt_2_str(&h_patt, ROW_FIELD));
+		fprintf(stdout, "[HAMMER] - %s: ", hPatt_2_str(&h_patt, ROW_FIELD)); // ROW_FIELD: 1
 		for (size_t bk = 0; bk < get_banks_cnt(); bk++) {
 
 			for (int s = 0; s < cfg->aggr_n; s++) {
@@ -715,7 +738,7 @@ int n_sided_test(HammerSuite * suite)
 			}
 
 			uint64_t time = hammer_it(&h_patt, mem);
-			fprintf(stderr, "%ld ", time);
+			fprintf(stdout, "%ld ", time);
 
 			scan_rows(suite, &h_patt, 0);
 			for (int idx = 0; idx<h_patt.len; idx++) {
@@ -725,7 +748,7 @@ int n_sided_test(HammerSuite * suite)
 				print_end_attack();
 #endif
 		}
-		fprintf(stderr, "\n");
+		fprintf(stdout, "\n");
 	}
 	free(h_patt.d_lst);
 }
@@ -760,7 +783,7 @@ void fuzz(HammerSuite *suite, int d, int v)
 		h_patt.d_lst[h_patt.len-1].row = h_patt.d_lst[h_patt.len-2].row + d + 1;
 	}
 
-	fprintf(stderr, "[HAMMER] - %s: ", hPatt_2_str(&h_patt, ROW_FIELD));
+	fprintf(stdout, "[HAMMER] - %s: ", hPatt_2_str(&h_patt, ROW_FIELD));
 	for (int bk = 0; bk < get_banks_cnt(); bk++)
 	{
 		for (int idx = 0; idx < h_patt.len; idx++) {
@@ -773,7 +796,7 @@ void fuzz(HammerSuite *suite, int d, int v)
 			fill_row(suite, &h_patt.d_lst[idx], suite->cfg->d_cfg, 0);
 
 		uint64_t time = hammer_it(&h_patt, suite->mem);
-		fprintf(stderr, "%lu ",time);
+		fprintf(stdout, "%lu ",time);
 
 		scan_rows(suite, &h_patt, 0);
 		for (int idx = 0; idx<h_patt.len; idx++) {
@@ -896,10 +919,13 @@ void hammer_session(SessionConfig * cfg, MemoryBuffer * memory)
 	}
 	out_fd = fopen(out_name, "w+");
 
-	fprintf(stderr,
+	fprintf(stdout,
 		"[LOG] - Hammer session! access pattern: %s\t data pattern: %s\n",
 		config_str[cfg->h_cfg], data_str[cfg->d_cfg]);
-	fprintf(stderr, "[LOG] - File: %s\n", out_name);
+#ifdef BY_DEBUG
+	fprintf(stdout, "ERR?\n");
+#endif
+	fprintf(stdout, "[LOG] - File: %s\n", out_name);
 
 	HammerSuite *suite = (HammerSuite *) malloc(sizeof(HammerSuite));
 	suite->cfg = cfg;
@@ -907,12 +933,10 @@ void hammer_session(SessionConfig * cfg, MemoryBuffer * memory)
 	suite->d_base = d_base;
 	suite->mapper = (ADDRMapper *) malloc(sizeof(ADDRMapper));
 	init_addr_mapper(suite->mapper, &mem, &suite->d_base, cfg->h_rows);
-
 #ifndef FLIPTABLE
 	export_cfg(suite);	// export the configuration of the experiment to file.
 	fprintf(out_fd, OUT_HEAD);
 #endif
-
 	switch (cfg->h_cfg) {
 		case ASSISTED_DOUBLE_SIDED:
 		{
@@ -930,15 +954,22 @@ void hammer_session(SessionConfig * cfg, MemoryBuffer * memory)
 		{
 			assert(cfg->aggr_n > 1);
 			suite->hammer_test = (int (*)(void *))n_sided_test;
+#ifdef BY_DEBUG
+	fprintf(stdout, "N_SIDED");
+#endif
 			break;
 		}
 		default:
 		{
+			printf("default\n");
 			suite->hammer_test = (int (*)(void *))n_sided_test;
 		}
 	}
 
 	suite->hammer_test(suite);
+#ifdef BY_DEBUG
+	fprintf(stdout, "ERREND\n");
+#endif
 	fclose(out_fd);
 	tear_down_addr_mapper(suite->mapper);
 	free(suite);

@@ -15,7 +15,7 @@
 #define DEF_RNG_LEN (8<<10)
 #define DEBUG
 #define DEBUG_LINE fprintf(stderr, "[DEBUG] - GOT HERE\n");
-
+#define BY_DEBUG
 static physaddr_t base_phys = 0L;
 
 uint64_t get_pfn(uint64_t entry)
@@ -38,14 +38,14 @@ physaddr_t get_physaddr(uint64_t v_addr, int pmap_fd)
 	// int rd = fread(&entry, sizeof(entry), 1 ,fp);
 	int bytes_read = pread(pmap_fd, &entry, sizeof(entry), offset);
 
-	assert(bytes_read == 8);
-	assert(entry & (1ULL << 63));
+	assert(bytes_read == 8); // 8byte fully unread
+	assert(entry & (1ULL << 63)); // page exist bit
 
 	if (to_open) {
 		close(pmap_fd);
 	}
 
-	pfn = get_pfn(entry);
+	pfn = get_pfn(entry); // pagemap info except page exist bit
 	assert(pfn != 0);
 	return (pfn << 12) | (v_addr & 4095);
 }
@@ -99,6 +99,9 @@ char *phys_2_virt(physaddr_t p_addr, MemoryBuffer * mem)
 	    (pte_t *) bsearch(&src_pte, mem->physmap, mem->size / PAGE_SIZE,
 			      sizeof(pte_t), phys_cmp);
 
+#ifdef BY_DEBUG
+	fprintf(stderr, "phys_2_virt: p_addr: %ld, searched addr: %ld, res_pte->p_addr: %ld, res_pte->v_addr: %ld, src_pte.vaddr:%ld, return_vaddr:%ld \n", res_pte, src_pte.p_addr, res_pte->p_addr, res_pte->v_addr, src_pte.v_addr, (char *)((uint64_t) res_pte-> v_addr | ((uint64_t) p_addr & (((uint64_t) PAGE_SIZE - 1)))));
+#endif
 	if (res_pte == NULL)
 		return (char *)NOT_FOUND;
 
